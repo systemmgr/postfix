@@ -15,7 +15,7 @@ pacman -S postfix s-nail
   
 Automatic install/update:
 ```
-sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/postfix/raw/master/install.sh)"
+sudo bash -c "$(curl -LSs https://github.com/systemmgr/postfix/raw/master/install.sh)"
 ```
 Manual install:
 ```
