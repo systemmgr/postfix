@@ -34,9 +34,6 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# no updates
-_systemmgr_noupdate
-
 # Make sure the scripts repo is installed
 
 scripts_check
@@ -77,6 +74,12 @@ show_optvars "$@"
 
 sudoreq # sudo required
 #sudorun  # sudo optional
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Do not update
+
+_systemmgr_noupdate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
