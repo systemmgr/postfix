@@ -70,16 +70,16 @@ show_optvars "$@"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Do not update
+
+_systemmgr_noupdate
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Requires root - no point in continuing
 
 sudoreq # sudo required
 #sudorun  # sudo optional
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Do not update
-
-_systemmgr_noupdate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
