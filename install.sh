@@ -34,6 +34,9 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# no updates
+_systemmgr_noupdate
+
 # Make sure the scripts repo is installed
 
 scripts_check
@@ -43,32 +46,24 @@ scripts_check
 # Defaults
 
 APPNAME="postfix"
-PLUGNAME=""
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# git repos
-
-PLUGINREPO=""
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Version
 
-APPVERSION="$(curl -LSs ${DOTFILESREPO:-https://github.com/casjay-dotfiles}/$APPNAME/raw/master/version.txt)"
+APPVERSION="$(curl -LSs ${SYSTEMMGRREPO:-https://github.com/systemmgr}/$APPNAME/raw/master/version.txt)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # if installing system wide - change to system_installdirs
 
-system_installdirs
+systemmgr_installer
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Set options
 
-APPDIR="$CONF/$APPNAME"
-PLUGDIR="$SHARE/$APPNAME/${PLUGNAME:-plugins}"
+APPDIR="$HOMEDIR/$APPNAME"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -146,29 +141,10 @@ failexitcode
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Plugins
-
-if [ "$PLUGNAME" != "" ]; then
-  if [ -d "$PLUGDIR"/.git ]; then
-    execute \
-      "git_update $PLUGDIR" \
-      "Updating $PLUGNAME"
-  else
-    execute \
-      "git_clone $PLUGINREPO $PLUGDIR" \
-      "Installing $PLUGNAME"
-  fi
-fi
-
-# exit on fail
-failexitcode
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # run post install scripts
 
 run_postinst() {
-  run_postinst_global
+  run_postinst_systemgr
   replace $APPDIR/main.cf MYHOSTNAME $(hostname -s)
   ln_sf $APPDIR/{access,canonical,relocated,transport,virtual,main.cf,master.cf} /etc/postfix/
   rm_rf /etc/aliases*
@@ -187,7 +163,7 @@ execute \
 
 # create version file
 
-install_version
+install_systemmgr_version
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
