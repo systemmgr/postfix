@@ -72,7 +72,7 @@ show_optvars "$@"
 
 # Do not update
 
-_systemmgr_noupdate
+systemmgr_noupdate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
