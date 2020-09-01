@@ -66,7 +66,7 @@ show_optvars "$@"
 
 # Do not update
 
-systemmgr_noupdate
+installer_noupdate
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
