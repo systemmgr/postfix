@@ -107,7 +107,7 @@ failexitcode
 # run post install scripts
 
 run_postinst() {
-  systemmgr_run_post
+  systemmgr_run_postinst
   replace $APPDIR/main.cf MYHOSTNAME $(hostname -s)
   ln_sf $APPDIR/{access,canonical,relocated,transport,virtual,main.cf,master.cf} /etc/postfix/
   rm_rf /etc/aliases*
