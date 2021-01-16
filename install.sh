@@ -90,13 +90,13 @@ ensure_perms
 
 if [ -d "$APPDIR/.git" ]; then
   execute \
-  "git_update $APPDIR" \
-  "Updating $APPNAME configurations"
+    "git_update $APPDIR" \
+    "Updating $APPNAME configurations"
 else
   execute \
-  "backupapp && \
+    "backupapp && \
         git_clone -q $REPO/$APPNAME $APPDIR" \
-  "Installing $APPNAME configurations"
+    "Installing $APPNAME configurations"
 fi
 
 # exit on fail
@@ -108,18 +108,23 @@ failexitcode
 
 run_postinst() {
   systemmgr_run_postinst
-  replace $APPDIR/main.cf MYHOSTNAME $(hostname -s)
+  if cmd_exists procmail; then
+    chown -Rf root:root "$(command -v procmail 2>/dev/null)"
+    chmod -Rf 4755 "$(command -v procmail 2>/dev/null)"
+  fi
+  replace $APPDIR/main.cf "MYHOSTNAME" "$(hostname -s)"
   ln_sf $APPDIR/{access,canonical,relocated,transport,virtual,main.cf,master.cf} /etc/postfix/
   rm_rf /etc/aliases*
   cp_rf $APPDIR/aliases /etc/aliases
   postmap /etc/postfix/{access,canonical,relocated,transport,virtual}
   newaliases
   systemctl restart postfix
+  touch "$APPDIR/.installed"
 }
 
 execute \
-"run_postinst" \
-"Running post install scripts"
+  "run_postinst" \
+  "Running post install scripts"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
