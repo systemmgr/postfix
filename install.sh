@@ -64,9 +64,9 @@ show_optvars "$@"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Do not update
+# Do not update - add --force to overwrite
 
-installer_noupdate
+installer_noupdate "$@"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
