@@ -12,5 +12,3 @@ relayhost = mail.casjay.in
 myhostname = MYHOSTNAME.casjay.in
 myorigin = MYHOSTNAME.casjay.in
 mydestination =
-
-# vim:ts=4:sw=4

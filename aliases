@@ -159,6 +159,4 @@ jenkins:            ci-admin
 ci-admin:           admin
 scm-admin:          admin
 admin:              forwardto
-forwardto:          administrator@casjay.net
-
-# vim:ts=4:sw=4
+forwardto:          administrator

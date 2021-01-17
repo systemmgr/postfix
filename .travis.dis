@@ -7,10 +7,8 @@ sudo: enabled
 
 install:
   - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/master/install.sh)"
-  - sudo pkmgr init
-  - pkmgr update
-  - sudo dotfiles admin scripts
-  - sudo dotfiles admin postfix
+  - sudo systemmgr install scripts
+  - sudo systemmgr install postfix
 
 matrix:
   include:
