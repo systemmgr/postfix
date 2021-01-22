@@ -45,7 +45,7 @@ scripts_check
 
 # Defaults
 APPNAME="${APPNAME:-postfix}"
-APPDIR="/etc/$APPNAME"
+APPDIR="/usr/local/etc/$APPNAME"
 INSTDIR="${INSTDIR}"
 REPO="${SYSTEMMGRREPO:-https://github.com/systemmgr}/${APPNAME}"
 REPORAW="${REPORAW:-$REPO/raw}"
@@ -120,9 +120,10 @@ run_postinst() {
     chown -Rf root:root "$(command -v procmail 2>/dev/null)"
     chmod -Rf 4755 "$(command -v procmail 2>/dev/null)"
   fi
+  for f in /etc/postfix/*; do unlink /etc/postfix/$f; done
   replace "$APPDIR/main.cf" "MYHOSTNAME" "$(hostname -s)"
-  cp_rf "$APPDIR/." /etc/postfix/
   rm_rf /etc/aliases*
+  cp_rf "$APPDIR/." /etc/postfix/
   cp_rf "$APPDIR"/aliases /etc/aliases
   postmap /etc/postfix/{access,canonical,relocated,transport,virtual}
   newaliases
