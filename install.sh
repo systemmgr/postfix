@@ -45,7 +45,8 @@ scripts_check
 
 # Defaults
 APPNAME="${APPNAME:-postfix}"
-APPDIR="/usr/local/etc/$APPNAME"
+APPDIR="/etc/$APPNAME"
+INSTDIR="${INSTDIR}"
 REPO="${SYSTEMMGRREPO:-https://github.com/systemmgr}/${APPNAME}"
 REPORAW="${REPORAW:-$REPO/raw}"
 APPVERSION="$(curl -LSs $REPORAW/master/version.txt)"
@@ -61,6 +62,13 @@ systemmgr_install
 # Script options IE: --help
 
 show_optvars "$@"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Requires root - no point in continuing
+
+sudoreq # sudo required
+#sudorun  # sudo optional
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -88,14 +96,14 @@ ensure_perms
 
 # Main progam
 
-if [ -d "$APPDIR/.git" ]; then
+if [ -d "$INSTDIR/.git" ]; then
   execute \
-    "git_update $APPDIR" \
+    "git_update $INSTDIR" \
     "Updating $APPNAME configurations"
 else
   execute \
     "backupapp && \
-        git_clone -q $REPO/$APPNAME $APPDIR" \
+        git_clone -q $REPO/$APPNAME $INSTDIR" \
     "Installing $APPNAME configurations"
 fi
 
@@ -112,10 +120,10 @@ run_postinst() {
     chown -Rf root:root "$(command -v procmail 2>/dev/null)"
     chmod -Rf 4755 "$(command -v procmail 2>/dev/null)"
   fi
-  replace $APPDIR/main.cf "MYHOSTNAME" "$(hostname -s)"
-  ln_sf $APPDIR/{access,canonical,relocated,transport,virtual,main.cf,master.cf} /etc/postfix/
+  replace "$APPDIR/main.cf" "MYHOSTNAME" "$(hostname -s)"
+  cp_rf "$APPDIR/." /etc/postfix/
   rm_rf /etc/aliases*
-  cp_rf $APPDIR/aliases /etc/aliases
+  cp_rf "$APPDIR"/aliases /etc/aliases
   postmap /etc/postfix/{access,canonical,relocated,transport,virtual}
   newaliases
   systemctl restart postfix
