@@ -6,7 +6,7 @@
 sudo: enabled
 
 install:
-  - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/master/install.sh)"
+  - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/main/install.sh)"
   - sudo systemmgr install scripts
   - sudo systemmgr install postfix
 

@@ -5,13 +5,13 @@ Postfix attempts to be fast, easy to administer, and secure mail server
 Requires:  
 
 ```shell
-sudo bash -c "$(curl -LSs https://github.com/systemmgr/installer/raw/master/install.sh)"
+sudo bash -c "$(curl -LSs https://github.com/systemmgr/installer/raw/main/install.sh)"
 ```
 
 Automatic:
 
 ```shell
-bash -c "$(curl -LSs https://github.com/systemmgr/postfix/raw/master/install.sh)"
+bash -c "$(curl -LSs https://github.com/systemmgr/postfix/raw/main/install.sh)"
 ```
 
 Install:
