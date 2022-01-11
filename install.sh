@@ -71,7 +71,7 @@ show_optvars "$@"
 sudoreq # sudo required
 #sudorun # sudo optional
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Do not update - add --force to overwrite
+# Do not update [add --force to overwrite]
 installer_noupdate "$@"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # initialize the installer
@@ -133,18 +133,20 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  touch "$APPDIR/.installed"
-  if cmd_exists procmail; then
-    chown -Rf root:root "$(command -v procmail 2>/dev/null)"
-    chmod -Rf 4755 "$(command -v procmail 2>/dev/null)"
-  fi
-  for f in /etc/postfix/*; do unlink /etc/postfix/$f; done
-  replace "$APPDIR/main.cf" "MYHOSTNAME" "$(hostname -s)"
   rm_rf /etc/aliases*
+  if cmd_exists procmail; then
+    chown -Rf root:root "$(builtin command -v procmail 2>/dev/null)"
+    chmod -Rf 4755 "$(builtin -v procmail 2>/dev/null)"
+  fi
+  for f in /etc/postfix/*; do
+    unlink "/etc/postfix/$f"
+  done
   cp_rf "$APPDIR/." /etc/postfix/
-  cp_rf "$APPDIR"/aliases /etc/aliases && newaliases
-  postmap /etc/postfix/{access,canonical,relocated,transport,virtual}
-  system_service_enable postfix && system_service_start postfix || return 1
+  cp_rf "$APPDIR/aliases" /etc/aliases && newaliases
+  replace "/etc/postfix/main.cf" "MYHOSTNAME" "$(hostname -f)"
+  postmap /etc/postfix/{access,canonical,relocated,transport,virtual} &>/dev/null
+  system_service_enable postfix && system_service_start postfix
+  touch "$APPDIR/.installed"
 }
 #
 execute "run_postinst" "Running post install scripts"
