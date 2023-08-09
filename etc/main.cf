@@ -1,25 +1,40 @@
-mydestination =
-myorigin = MYHOSTNAME.casjay.in
-myhostname = MYHOSTNAME.casjay.in
-
-smtpd_use_tls = yes
-smtpd_tls_auth_only = no
-smtpd_tls_dh1024_param_file = /etc/ssl/dhparam/dh1024.pem
-smtpd_tls_dh2048_param_file = /etc/ssl/dhparam/dh2048.pem
-smtpd_tls_key_file = /etc/ssl/CA/CasjaysDev/private/localhost.key
-smtpd_tls_cert_file = /etc/ssl/CA/CasjaysDev/certs/localhost.crt
-smtpd_tls_CAfile = /etc/ssl/CA/CasjaysDev/certs/ca.crt
-
+###
+compatibility_level = 2
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
+mynetworks = /etc/postfix/mynetworks
 transport_maps = hash:/etc/postfix/transport
-canonical_maps = hash:/etc/postfix/canonical
-
-fax_destination_recipient_limit = 1
-
-smtp_sasl_auth_enable = yes
-smtp_sasl_security_options = noanonymous
+virtual_alias_maps = hash:/etc/postfix/virtual
+relay_domains = hash:/etc/postfix/mydomains, regexp:/etc/postfix/mydomains.pcre
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 
-relayhost = [casjay.helioho.st]:25
+tls_random_source = dev:/dev/urandom
+
+smtp_use_tls = yes
+smtp_tls_wrappermode = yes
+smtp_tls_security_level = encrypt
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous
+
+smtpd_use_tls = yes
+smtpd_tls_session_cache_database = btree:/etc/postfix/smtpd_scache
+smtpd_tls_dh1024_param_file = /etc/ssl/dhparam/1024.pem
+smtpd_tls_exclude_ciphers = aNULL, eNULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CBC3-SHA, KRB5-DES, CBC3-SHA
+# LECerts
+smtp_tls_key_file = /etc/letsencrypt/live/domain/privkey.pem
+smtp_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
+smtpd_tls_key_file = /etc/letsencrypt/live/domain/privkey.pem
+smtpd_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, defer_unauth_destination
+
+mydestination =
+inet_interfaces = all
+inet_protocols = ipv4
+append_dot_mydomain = yes
+local_transport=error: local delivery disabled
+
+myorigin = myserverdomainname
+myhostname = myserverdomainname
+
+relayhost = [casjay.helioho.st]:465
 
