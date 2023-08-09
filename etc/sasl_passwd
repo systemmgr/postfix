@@ -1,1 +1,1 @@
-#[mail.isp.example]:587 username:password
+#[mail.isp.example]:25 username:password
