@@ -17,4 +17,8 @@ canonical_maps = hash:/etc/postfix/canonical
 
 fax_destination_recipient_limit = 1
 
-relayhost = [smtp-relay.casjay.email]:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+
+relayhost = [casjay.helioho.st]:587
