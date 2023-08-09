@@ -33,7 +33,7 @@ inet_protocols = ipv4
 append_dot_mydomain = yes
 local_transport=error: local delivery disabled
 
-myorigin = myserverdomainname
+myorigin = casjay.helioho.st
 myhostname = myserverdomainname
 
 relayhost = [casjay.helioho.st]:465
