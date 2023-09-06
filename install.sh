@@ -145,7 +145,7 @@ run_postinst() {
   cp_rf "$APPDIR/aliases" /etc/aliases && newaliases
   replace "/etc/postfix/main.cf" "myserverdomainname" "$(hostname -f)"
   replace "/etc/postfix/mydomains" "myserverdomainname" "$(hostname -f)"
-  touch /etc/postfix/{access,canonical,relocated,mydomains,transport,virtual,sasl_passwd}
+  touch /etc/postfix/{access,canonical,relocated,mydomains,mydomains.pcre,transport,virtual,sasl_passwd}
   postmap /etc/postfix/{access,canonical,relocated,mydomains,transport,virtual,sasl_passwd} &>/dev/null
   system_service_enable postfix && system_service_start postfix
   touch "$APPDIR/.installed"
