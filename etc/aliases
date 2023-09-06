@@ -1,5 +1,4 @@
 # You should modify this to meet your enviroment
-
 mailer-daemon:      postmaster
 postmaster:         postmaster
 bin:                admin
@@ -123,7 +122,6 @@ dnssec-tools:       admin
 system-scripts:     admin
 ca-request:         forwardto
 nas:                admin
-root:               admin
 pager:              admin
 nobody:             null
 accounting:         null
@@ -159,4 +157,5 @@ jenkins:            ci-admin
 ci-admin:           admin
 scm-admin:          admin
 admin:              forwardto
-forwardto:          administrator
+forwardto:          root
+#root:               administrator
