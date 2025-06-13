@@ -1,21 +1,26 @@
-#
-# Postfix master process configuration file.  For details on the format
-# of the file, see the master(5) manual page (command: "man 5 master").
-#
-# Do not forget to execute "postfix reload" after editing this file.
-#
+# Postfix master process configuration file.
 # ==========================================================================
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
 # ==========================================================================
+# amavisd-new deamon - https://www.habibza.in/install-amavisd-and-clamav-alma-linux-8-centos-8/
 smtp      inet  n       -       n       -       -       smtpd
+    -o syslog_name=postfix/smtp
+smtpd     pass  -       -       n       -       -       smtpd
+    -o syslog_name=postfix/smtpd
 submission inet n       -       n       -       -       smtpd
+    -o syslog_name=postfix/submission
+    -o smtpd_tls_security_level=encrypt
+    -o smtpd_sasl_auth_enable=yes
+    -o milter_macro_daemon_name=ORIGINATING
 smtps     inet  n       -       n       -       -       smtpd
-628       inet  n       -       n       -       -       qmqpd
+    -o syslog_name=postfix/smtps
+    -o smtpd_tls_wrappermode=yes
+    -o smtpd_sasl_auth_enable=yes
+    -o milter_macro_daemon_name=ORIGINATING
 pickup    fifo  n       -       n       60      1       pickup
 cleanup   unix  n       -       n       -       0       cleanup
 qmgr      fifo  n       -       n       300     1       qmgr
-#qmgr     fifo  n       -       n       300     1       oqmgr
 tlsmgr    unix  -       -       n       1000?   1       tlsmgr
 rewrite   unix  -       -       n       -       -       trivial-rewrite
 bounce    unix  -       -       n       -       0       bounce
@@ -27,6 +32,7 @@ proxymap  unix  -       -       n       -       -       proxymap
 proxywrite unix -       -       n       -       1       proxymap
 smtp      unix  -       -       n       -       -       smtp
 relay     unix  -       -       n       -       -       smtp
+    -o smtp_helo_timeout=5 -o smtp_connect_timeout=5
 showq     unix  n       -       n       -       -       showq
 error     unix  -       -       n       -       -       error
 retry     unix  -       -       n       -       -       error
@@ -36,8 +42,3 @@ virtual   unix  -       n       n       -       -       virtual
 lmtp      unix  -       -       n       -       -       lmtp
 anvil     unix  -       -       n       -       1       anvil
 scache    unix  -       -       n       -       1       scache
-#mailman   unix  -       n       n       -       -       pipe
-#  flags=FR user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py
-#  ${nexthop} ${user}
-#fax unix - n n - 1 pipe
-#  flags= user=asterisk argv=/usr/bin/faxmail -d -n ${user}
