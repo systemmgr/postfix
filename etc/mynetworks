@@ -9,7 +9,7 @@
 ## Hosteons.com
 ### dns.casjaydns.com
 82.29.128.43
-[2402:d0c0:0012:47ab:0000:0000:0000:0001/]64
+[2402:d0c0:0012:47ab::1]/64
 
 ### dns1.casjaydns.com
 103.124.104.139
@@ -21,21 +21,24 @@
 
 ### ns.casjaydns.fyi
 82.29.128.140
-[2402:d0c0:12:b52::1]
+[2402:d0c0:12:b52::1]/64
 
 ### pihole.casjay.nl
 82.29.128.145
-[2402:d0c0:12:e04e::1]
+[2402:d0c0:12:e04e::1]/64
 
 ### myip.ifcfg.us
 82.29.128.146
-[2402:d0c0:12:e0dd::1]
+[2402:d0c0:12:e0dd::1]/54
 
 ### search.scour.li
 82.29.128.193
-[2402:d0c0:12:2fa2::1]
+[2402:d0c0:12:2fa2::1]/64
 
 ## hivelocity.net
+### proxmox.casjayvps.us
+23.227.180.24/30
+[2604:4500:000a:048d::1]/64
 ### netbird.vpn2me.us
 23.227.187.212
 [2604:4500:0009:003d:1c00:6aff:fe00:0747]
@@ -46,7 +49,7 @@
 
 ### Server
 23.227.180.24/30
-[2604:4500:000a:048d:0000:0000:0000:0000]/64
+[2604:4500:000a:048d::1]/64
 
 ## interserver.net
 ### nc.casjay.cloud
@@ -88,47 +91,47 @@
 ## ssdnodes.com
 ### dc.casjay.org
 104.225.216.132
-[2602:ff16:3:12eb::1]
+[2602:ff16:3:12eb::1]/64
 
-### ci.amd64.us
+### ci.amd64.us 
 104.225.216.157
-[2602:ff16:3:1180::1]
+[2602:ff16:3:1180::1]/64
 
 ### reg.dockersrc.us
 208.87.133.101
-[2602:ff16:3:0:1:33b:0:1]
+[2602:ff16:3:0:1:33b:0:1]/64
 
-### media.csj.rocks
+### media.csj.rocks 
 104.225.216.129
-[2602:ff16:3:0:1:133:0:1]
+[2602:ff16:3:0:1:133:0:1]/64
 
-### db.sqldb.us
+### db.sqldb.us 
 172.93.49.72
-[2602:ff16:3:0:1:266:0:1]
+[2602:ff16:3:0:1:266:0:1]/64
 
-### workspace.casjay.us
+### workspace.casjay.us 
 104.225.216.21
-[2602:ff16:3:0:1:474:0:1]
+[2602:ff16:3:0:1:474:0:1]/64
 
-### chat.casjay.social
+### chat.casjay.social 
 23.29.118.136
-[2602:ff16:3:0:1:234:0:1]
+[2602:ff16:3:0:1:234:0:1]/64
 
-### git.casjay.work
+### git.casjay.work 
 208.87.133.28
-[2602:ff16:3:0:1:344:0:1]
+[2602:ff16:3:0:1:344:0:1]/64
 
-### services.casjay.app
+### services.casjay.app 
 208.87.128.163
-[2602:ff16:3:0:1:2fa:0:1]
+[2602:ff16:3:0:1:2fa:0:1]/64
 
-### hosting.casjay.xyz
+### hosting.casjay.xyz 
 104.225.219.29
-[2602:ff16:15:0:1:dc:0:1]
+[2602:ff16:15:0:1:dc:0:1]/64
 
 ### code.casjay.dev
 172.93.54.93
-[2602:ff16:11:0:1:a:0:1]
+[2602:ff16:11:0:1:a:0:1]/64
 
 ## cloud.oracle.com
 ### redir.redxt.us
@@ -159,13 +162,13 @@
 104.24.0.0/14
 172.64.0.0/13
 131.0.72.0/22
-2400:cb00::/32
-2606:4700::/32
-2803:f800::/32
-2405:b500::/32
-2405:8100::/32
-2a06:98c0::/29
-2c0f:f248::/32
+#|2400:cb00::1]/32
+#[2606:4700::1]/32
+#[2803:f800::1]/32
+#[2405:b500::1]/32
+#[2405:8100::1]/32
+#[2a06:98c0::1]/29
+#[2c0f:f248::1]/32
 
 # Dynamic
 35.167.74.121
@@ -215,6 +218,7 @@ casjaydns.com
 casjaydns.fyi
 casjaysdev.pro
 casjayvpn.cc
+casjayvps.us
 csj.lol
 csj.rocks
 dockersrc.us
@@ -258,6 +262,7 @@ vpn2me.us
 *.casjaydns.fyi
 *.casjaysdev.pro
 *.casjayvpn.cc
+*.casjayvps.us
 *.csj.lol
 *.csj.rocks
 *.dockersrc.us
