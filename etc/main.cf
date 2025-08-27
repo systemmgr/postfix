@@ -1,6 +1,5 @@
 ############################################################
-# 📄 Postfix main.cf — Satellite relay for proxmox.casjayvps.us
-#   - Relays mail from trusted networks to a smarthost
+# 📄 Postfix main.cf — Satellite relay - Relays mail to a smarthost
 #   - Provides 25 (STARTTLS), 587 (mandatory STARTTLS), 465 (implicit TLS)
 ############################################################
 
@@ -12,6 +11,11 @@ mydomain                         = mydomainname
 myorigin                         = mydomainname
 myhostname                       = myserverhostname
 compatibility_level              = 2
+
+########################
+# 🧹 Misc/Defaults
+########################
+append_dot_mydomain              = no
 
 ########################
 # 🌐 Network / Listener
@@ -46,31 +50,32 @@ smtpd_relay_restrictions         = permit_mynetworks, permit_sasl_authenticated,
 smtpd_recipient_restrictions     = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 
 ########################
-# 🧪 (Optional) Milters — adjust if you don’t run these
+# 🧪 (Optional) Milters
 ########################
 #smtpd_milters                    =
 #non_smtpd_milters                = $smtpd_milters
 
 ########################
-# 🚀 Outbound relay (to smarthost) — STARTTLS on 587
+# 🧰 Outbound policy
 ########################
-relayhost                        = [smtp.casjay.email]:587
-smtp_tls_wrappermode             = no                 # NO wrapper on 587 (STARTTLS)
-smtp_tls_security_level          = encrypt            # require TLS to the relay
+smtp_tls_wrappermode             = yes
+smtp_tls_security_level          = encrypt
 smtp_tls_loglevel                = 1
 smtp_tls_protocols               = !SSLv2, !SSLv3
 smtp_tls_mandatory_protocols     = TLSv1.2, TLSv1.3
 
-# SASL auth to the relay (typical for smarthosts)
-smtp_sasl_auth_enable            = yes
+########################
+# SASL auth to the relay
+########################
+smtp_sasl_auth_enable            = no
 smtp_sasl_password_maps          = hash:/etc/postfix/sasl/passwd
 smtp_sasl_security_options       = noanonymous
 smtp_sasl_mechanism_filter       = plain, login
 
 ########################
-# 🧹 Misc/Defaults
+# 🚀 Outbound relay (to smarthost)
 ########################
-append_dot_mydomain              = no
+relayhost                        = [smtp.casjay.email]:465
 
 ############################################################
 # ✅ End of main.cf
