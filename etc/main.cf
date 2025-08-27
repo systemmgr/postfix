@@ -1,46 +1,77 @@
-# ===== Identity =====
-smtpd_banner = CasjaysDev Satellite Server
-mydomain     = mydomainname
-myorigin     = mydomainname
-myhostname   = myserverhostname
+############################################################
+# 📄 Postfix main.cf — Satellite relay for proxmox.casjayvps.us
+#   - Relays mail from trusted networks to a smarthost
+#   - Provides 25 (STARTTLS), 587 (mandatory STARTTLS), 465 (implicit TLS)
+############################################################
 
-# ===== Compatibility =====
-compatibility_level = 2
+########################
+# 🔖 Identity
+########################
+smtpd_banner                     = CasjaysDev Satellite Server
+mydomain                         = mydomainname
+myorigin                         = mydomainname
+myhostname                       = myserverhostname
+compatibility_level              = 2
 
-# ===== Listener / Protocols =====
-inet_interfaces = all
-inet_protocols  = all
+########################
+# 🌐 Network / Listener
+########################
+inet_interfaces                  = all
+inet_protocols                   = all
+mynetworks                       = /etc/postfix/mynetworks
 
-# ===== Trust only your networks (via CIDR table) =====
-mynetworks = cidr:/etc/postfix/mynetworks
+########################
+# 📮 Local delivery (disabled for satellite role)
+########################
+mydestination                    =
+local_transport                  = error: local delivery disabled
+maximal_queue_lifetime           = 30d
 
-# ===== Local delivery disabled (pure relay) =====
-mydestination          =
-maximal_queue_lifetime = 30d
-local_transport        = error: local delivery disabled
+########################
+# 🔐 Server-side TLS (for inbound 25/587/465)
+########################
+smtpd_use_tls                    = yes
+smtpd_tls_cert_file              = /etc/letsencrypt/live/proxmox.casjayvps.us/fullchain.pem
+smtpd_tls_key_file               = /etc/letsencrypt/live/proxmox.casjayvps.us/privkey.pem
+smtpd_tls_security_level         = may                # 25 will *offer* STARTTLS; 587/465 enforce via master.cf
+smtpd_tls_loglevel               = 1
+# Minimum protocol policy (safe defaults):
+smtpd_tls_protocols              = !SSLv2, !SSLv3
+smtpd_tls_mandatory_protocols    = TLSv1.2, TLSv1.3
 
-# ===== TLS to smarthost =====
-smtp_tls_loglevel        = 1
-smtp_tls_wrappermode     = yes
-smtp_tls_security_level  = encrypt
-smtp_sasl_auth_enable    = no
+########################
+# 🧰 Inbound policy (no open relay)
+########################
+smtpd_relay_restrictions         = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
+smtpd_recipient_restrictions     = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 
-# ===== Auth to smarthost =====
-smtp_sasl_security_options = noanonymous
-smtp_sasl_mechanism_filter = plain, login
-smtp_sasl_password_maps    = hash:/etc/postfix/sasl/passwd
+########################
+# 🧪 (Optional) Milters — adjust if you don’t run these
+########################
+#smtpd_milters                    =
+#non_smtpd_milters                = $smtpd_milters
 
-# ===== Inbound policy (prevents open relay) =====
-smtpd_relay_restrictions     = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
-smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_destination
+########################
+# 🚀 Outbound relay (to smarthost) — STARTTLS on 587
+########################
+relayhost                        = [smtp.casjay.email]:587
+smtp_tls_wrappermode             = no                 # NO wrapper on 587 (STARTTLS)
+smtp_tls_security_level          = encrypt            # require TLS to the relay
+smtp_tls_loglevel                = 1
+smtp_tls_protocols               = !SSLv2, !SSLv3
+smtp_tls_mandatory_protocols     = TLSv1.2, TLSv1.3
 
-# ===== TLS for inbound (optional; nice for LAN clients that use STARTTLS) =====
-smtpd_use_tls       = yes
-smtpd_tls_key_file  = /etc/letsencrypt/live/domain/privkey.pem
-smtpd_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
+# SASL auth to the relay (typical for smarthosts)
+smtp_sasl_auth_enable            = yes
+smtp_sasl_password_maps          = hash:/etc/postfix/sasl/passwd
+smtp_sasl_security_options       = noanonymous
+smtp_sasl_mechanism_filter       = plain, login
 
-# ===== Cleanups =====
-append_dot_mydomain = no
+########################
+# 🧹 Misc/Defaults
+########################
+append_dot_mydomain              = no
 
-# ===== Outbound via smarthost (implicit TLS on 465) =====
-relayhost = [smtp.casjay.email]:465
+############################################################
+# ✅ End of main.cf
+############################################################
