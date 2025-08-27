@@ -144,7 +144,8 @@ run_postinst() {
     unlink "/etc/postfix/$f"
   done
   cp_rf "$APPDIR/." /etc/postfix/
-  cp_rf "$APPDIR/aliases" /etc/aliases && newaliases
+  mv -f "$APPDIR/aliases" /etc/aliases
+  [ -f "/etc/aliases" ] && newaliases &>/dev/null
   replace "/etc/postfix/main.cf" "mydomainname" "$(hostname -d)"
   replace "/etc/postfix/main.cf" "myserverhostname" "$(hostname -f)"
   touch /etc/postfix/{access,canonical,relocated,mydomains,mydomains.pcre,transport,virtual,sasl/passwd}
