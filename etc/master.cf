@@ -3,7 +3,6 @@
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
 # ==========================================================================
-# amavisd-new deamon - https://www.habibza.in/install-amavisd-and-clamav-alma-linux-8-centos-8/
 smtp      inet  n       -       n       -       -       smtpd
     -o syslog_name=postfix/smtp
 smtpd     pass  -       -       n       -       -       smtpd
