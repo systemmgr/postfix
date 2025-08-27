@@ -1,40 +1,44 @@
-### Main postfix config
-smtpd_banner = CasjaysDev backup MX Server
+# ===== Identity =====
+smtpd_banner = CasjaysDev Satellite Server
+mydomain = mydomainname
+myorigin   = mydomainname
+myhostname = myserverhostname
 
+# ===== Compatibility =====
 compatibility_level = 2
 
-smtpd_sasl_path = smtpd
+# ===== Listener / Protocols =====
+inet_interfaces = all
+inet_protocols  = all
 
-inet_protocols = all
-maximal_queue_lifetime = 30d
+# ===== Trust only your networks (via CIDR table) =====
+mynetworks = cidr:/etc/postfix/mynetworks
 
+# ===== Local delivery disabled (pure relay) =====
 mydestination =
-myorigin = myserverhostname
-myhostname = myserverhostname
-mynetworks = /etc/postfix/mynetworks
-tls_random_source = dev:/dev/urandom
+maximal_queue_lifetime = 30d
+local_transport = error: local delivery disabled
 
-relay_domains = hash:/etc/postfix/mydomains, regexp:/etc/postfix/mydomains.pcre
-smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-
-smtp_use_tls = yes
-smtp_tls_loglevel = 1
-smtp_tls_wrappermode = yes
-smtp_sasl_auth_enable = no
+# ===== Auth to smarthost =====
+smtp_tls_loglevel       = 1
+smtp_tls_wrappermode   = yes
+smtp_sasl_auth_enable    = no
 smtp_tls_security_level = encrypt
 smtp_sasl_security_options = noanonymous
-smtp_sasl_password_maps = hash:/etc/postfix/sasl/passwd
-smtp_tls_key_file = /etc/letsencrypt/live/domain/privkey.pem
-smtp_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
+smtp_sasl_mechanism_filter = plain, login
+smtp_sasl_password_maps  = hash:/etc/postfix/sasl/passwd
 
-smtpd_use_tls = yes
-smtpd_tls_key_file = /etc/letsencrypt/live/domain/privkey.pem
-smtpd_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
+# ===== Inbound policy (prevents open relay) =====
+smtpd_relay_restrictions    = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_destination
 
-append_dot_mydomain = yes
-local_transport=error: local delivery disabled
+# ===== TLS for inbound (optional; nice for LAN clients that use STARTTLS) =====
+smtpd_use_tls = yes
+smtd_tls_key_file  = /etc/letsencrypt/live/domain/privkey.pem
+smtd_tls_cert_file = /etc/letsencrypt/live/domain/fullchain.pem
 
-luser_relay = root@myserverdomainname
+# ===== Cleanups =====
+append_dot_mydomain = no
 
+# ===== Outbound via smarthost (implicit TLS on 465) =====
 relayhost = [smtp.casjay.email]:465
