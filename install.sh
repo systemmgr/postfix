@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPNAME="postfix"
-USER="${SUDO_USER:-${USER}}"
-HOME="${USER_HOME:-${HOME}}"
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#set opts
-
+# shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ##@Version       : 020920211905-git
 # @Author        : Jason Hempstead
@@ -19,6 +13,12 @@ HOME="${USER_HOME:-${HOME}}"
 # @TODO          :
 # @Other         :
 # @Resource      :
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# # shellcheck disable=sc2329
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+APPNAME="postfix"
+USER="${SUDO_USER:-${USER}}"
+HOME="${USER_HOME:-${HOME}}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Import functions
 CASJAYSDEVDIR="${CASJAYSDEVDIR:-/usr/local/share/CasjaysDev/scripts}"
@@ -132,11 +132,13 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
 run_postinst() {
+  local procmailFile
+  procmailFile="$(builtin command -v procmail 2>/dev/null)"
   systemmgr_run_post
   rm_rf /etc/aliases*
   if cmd_exists procmail; then
-    chown -Rf root:root "$(builtin command -v procmail 2>/dev/null)"
-    chmod -Rf 4755 "$(builtin -v procmail 2>/dev/null)"
+    chmod -Rf 4755 "$procmailFile"
+    chown -Rf root:root "$procmailFile"
   fi
   for f in /etc/postfix/*; do
     unlink "/etc/postfix/$f"
