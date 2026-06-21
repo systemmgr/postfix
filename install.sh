@@ -140,17 +140,16 @@ run_postinst() {
     chmod -Rf 4755 "$procmailFile"
     chown -Rf root:root "$procmailFile"
   fi
-  for f in /etc/postfix/*; do
-    unlink "/etc/postfix/$f"
-  done
+  for f in /etc/postfix/*; do if [ -L "$f" ]; then unlink "/etc/postfix/$f";fi;done
   cp_rf "$APPDIR/." /etc/postfix/
-  mv -f "$APPDIR/aliases" /etc/aliases
+  mv -f "/etc/postfix/aliases" /etc/aliases
   [ -f "/etc/aliases" ] && newaliases &>/dev/null
-  replace "/etc/postfix/main.cf" "mydomainname" "$(hostname -d)"
   replace "/etc/postfix/main.cf" "myserverhostname" "$(hostname -f)"
+  replace "/etc/postfix/main.cf" "mydomainname" "$(hostname -d|grep -v --'(none)')"
   touch /etc/postfix/{access,canonical,relocated,mydomains,mydomains.pcre,transport,virtual,sasl/passwd}
   postmap /etc/postfix/{access,canonical,relocated,mydomains,transport,virtual,sasl/passwd} &>/dev/null
   system_service_enable postfix && system_service_start postfix
+  systemctl restart postfix 2>/dev/null >/dev/null
   touch "$APPDIR/.installed"
 }
 #
