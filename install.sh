@@ -132,20 +132,26 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
 run_postinst() {
-  local procmailFile
+  local procmailFile mailFqdn mailDomain
   procmailFile="$(builtin command -v procmail 2>/dev/null)"
+  mailFqdn="$(hostname -f 2>/dev/null)"
+  mailDomain="$(hostname -d 2>/dev/null | grep -v -- '(none)')"
+  # no domain part: derive it from the FQDN, else fall back to the FQDN itself
+  [ -n "$mailDomain" ] || mailDomain="${mailFqdn#*.}"
+  [ -n "$mailDomain" ] || mailDomain="$mailFqdn"
+  [ -n "$mailFqdn" ] && [ -n "$mailDomain" ] || { echo "Can not determine hostname/domain for postfix main.cf" 1>&2; return 1; }
   systemmgr_run_post
   rm_rf /etc/aliases*
   if cmd_exists procmail; then
     chmod -Rf 4755 "$procmailFile"
     chown -Rf root:root "$procmailFile"
   fi
-  for f in /etc/postfix/*; do if [ -L "$f" ]; then unlink "/etc/postfix/$f";fi;done
+  for f in /etc/postfix/*; do if [ -L "$f" ]; then unlink "$f"; fi; done
   cp_rf "$APPDIR/." /etc/postfix/
   mv -f "/etc/postfix/aliases" /etc/aliases
   [ -f "/etc/aliases" ] && newaliases &>/dev/null
-  replace "/etc/postfix/main.cf" "myserverhostname" "$(hostname -f)"
-  replace "/etc/postfix/main.cf" "mydomainname" "$(hostname -d|grep -v --'(none)')"
+  replace "/etc/postfix/main.cf" "myserverhostname" "$mailFqdn"
+  replace "/etc/postfix/main.cf" "mydomainname" "$mailDomain"
   touch /etc/postfix/{access,canonical,relocated,mydomains,mydomains.pcre,transport,virtual,sasl/passwd}
   postmap /etc/postfix/{access,canonical,relocated,mydomains,transport,virtual,sasl/passwd} &>/dev/null
   system_service_enable postfix && system_service_start postfix
